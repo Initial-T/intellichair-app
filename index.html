@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IntelliChair Sensor Dashboard</title>
+  <link rel="stylesheet" href="style.css"> <!-- Link to the external CSS file -->
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-database.js"></script>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <h1>INTELLICHAIR</h1>
+
+  <div id="posture">Posture: <span id="seatPosture">-</span></div>
+  <div id="lastUpdated">Last updated: <span id="timestamp">-</span></div>
+
+  <div class="sensor-container">
+    <div class="sensor-section">
+      <h3>Backrest Sensors</h3>
+      <table>
+        <thead>
+          <tr><th>Sensor</th><th>Location</th><th>Force (N)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>Backrest Left</td><td id="s1">-</td></tr>
+          <tr><td>2</td><td>Backrest Right</td><td id="s2">-</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="sensor-section">
+      <h3>Seat Sensors</h3>
+      <table>
+        <thead>
+          <tr><th>Sensor</th><th>Location</th><th>Force (N)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>3</td><td>Seat Right Front</td><td id="s3">-</td></tr>
+          <tr><td>4</td><td>Seat Right Rear</td><td id="s4">-</td></tr>
+          <tr><td>5</td><td>Seat Left Front</td><td id="s5">-</td></tr>
+          <tr><td>6</td><td>Seat Left Rear</td><td id="s6">-</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="chartCard">
+    <h3>Sensor Trend</h3>
+    <canvas id="sensorChart"></canvas>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCdUiXFXHemDB7SAuy1IvxZPnJx8pHLC5I",
+      authDomain: "intellichair-3062e.firebaseapp.com",
+      databaseURL: "https://intellichair-3062e-default-rtdb.firebaseio.com",
+      projectId: "intellichair-3062e",
+      storageBucket: "intellichair-3062e.appspot.com",
+      messagingSenderId: "480762202241",
+      appId: "1:480762202241:web:2714fd87266c32aadf6580"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const sensorRef = ref(db, 'pressure_data');
+
+    const dataHistory = {
+      labels: [],
+      datasets: Array.from({ length: 6 }, (_, i) => ({
+        label: `Sensor ${i + 1}`,
+        data: [],
+        borderColor: `hsl(${i * 60}, 70%, 50%)`,
+        fill: false,
+        tension: 0.3
+      }))
+    };
+
+    const chart = new Chart(document.getElementById('sensorChart'), {
+      type: 'line',
+      data: dataHistory,
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          x: { title: { display: true, text: 'Time' }},
+          y: { title: { display: true, text: 'Force (N)' }}
+        },
+        plugins: {
+          legend: {
+            labels: {
+              boxWidth: 12,
+              padding: 10
+            }
+          }
+        }
+      }
+    });
+
+    function updateChart(sensorValues) {
+      const timestamp = new Date().toLocaleTimeString();
+      dataHistory.labels.push(timestamp);
+      if (dataHistory.labels.length > 20) dataHistory.labels.shift();
+
+      sensorValues.forEach((val, i) => {
+        const dataset = dataHistory.datasets[i];
+        dataset.data.push(val);
+        if (dataset.data.length > 20) dataset.data.shift();
+      });
+
+      chart.update();
+    }
+
+    onValue(sensorRef, (snapshot) => {
+      const data = snapshot.val();
+      if (!data) return;
+
+      const values = [];
+      for (let i = 1; i <= 6; i++) {
+        const val = data[`sensor_${i}`];
+        const cell = document.getElementById(`s${i}`);
+        if (cell) {
+          cell.innerText = typeof val !== 'undefined' ? val : '-';
+          cell.className = isNaN(val) ? 'error' : '';
+          values.push(parseFloat(val));
+        }
+      }
+
+      const postureDisplay = document.getElementById('seatPosture');
+      postureDisplay.innerText = data.seat_status || '-';
+
+      const timestamp = new Date().toLocaleString();
+      document.getElementById('timestamp').innerText = timestamp;
+
+      updateChart(values);
+    });
+  </script>
+</body>
+</html>
