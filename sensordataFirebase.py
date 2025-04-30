@@ -4,7 +4,7 @@ from firebase_admin import credentials, db
 import time
 
 # Initialize Firebase
-cred = credentials.Certificate("C:\\Users\\Kusa\\Desktop\\intellichair-3062e-firebase-adminsdk-fbsvc-73a7f2be7d.json")
+cred = credentials.Certificate("pathway")
 firebase_admin.initialize_app(cred, {
     'databaseURL': 'https://intellichair-3062e-default-rtdb.firebaseio.com/'
 })
@@ -74,7 +74,7 @@ def main():
     send_command("start")
     while True:
         read_data()
-        time.sleep(0.1)  # Match the Arduino delay (100 ms)
+        time.sleep(0.1)  # Match the Arduino delay
 
 if __name__ == '__main__':
     main()
