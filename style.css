@@ -2,9 +2,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Hepta+Slab&family=Barlow:wght@400;500&display=swap');
 
 body {
-  font-family: 'Hepta Slab', serif; /* Applying Hepta Slab font for the body */
-  background-color: #ddddff; /* Soft lavender background */
-  color: #e6e6e6; /* Light gray text for better contrast */
+  font-family: 'Hepta Slab', serif; 
+  background-color: #ddddff; 
+  color: #e6e6e6; 
   margin: 0;
   padding: 2rem;
   display: flex;
@@ -13,19 +13,19 @@ body {
 }
 
 h1 {
-  font-family: 'Hepta Slab', serif; /* Hepta Slab for the title */
-  color: #1d3c8f; /* Deep tech blue for header */
+  font-family: 'Hepta Slab', serif; 
+  color: #1d3c8f; 
   margin-bottom: 1rem;
-  font-size: 4rem; /* Increase font size for a bigger title */
+  font-size: 4rem; 
   text-align: center;
   word-break: break-word;
 }
 
 #status, #posture, #lastUpdated {
-  font-family: 'Barlow', sans-serif; /* Applying Barlow font */
+  font-family: 'Barlow', sans-serif; 
   margin: 0.5rem 0;
   font-weight: bold;
-  color: #1d3c8f; /* Deep tech blue */
+  color: #1d3c8f; 
 }
 
 .sensor-container {
@@ -39,8 +39,8 @@ h1 {
 }
 
 .sensor-section {
-  background-color: #262b4f; /* Dark blue-gray background for cards */
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6); /* Darker shadow for depth */
+  background-color: #262b4f; 
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6); 
   border-radius: 16px;
   padding: 1rem;
   width: 100%;
@@ -49,31 +49,31 @@ h1 {
 }
 
 .sensor-section h3 {
-  font-family: 'Barlow', sans-serif; /* Barlow for sensor section title */
+  font-family: 'Barlow', sans-serif; 
   text-align: center;
-  color: #f1f1f1; /* Light gray for section title */
+  color: #f1f1f1; 
 }
 
 table {
-  font-family: 'Barlow', sans-serif; /* Barlow for table content */
+  font-family: 'Barlow', sans-serif; 
   width: 100%;
   border-collapse: collapse;
   margin-top: 0.5rem;
-  color: #f5f5f5; /* Light gray text for better contrast */
+  color: #f5f5f5; 
   display: block;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
 }
 
 th, td {
-  border: 1px solid #4a4160; /* Soft purple-gray border for table */
+  border: 1px solid #4a4160; 
   padding: 10px;
   text-align: center;
 }
 
 th {
-  background-color: #374f8f; /* Darker blue background for table headers */
-  color: #f1f1f1; /* Light gray for table headers */
+  background-color: #374f8f; 
+  color: #f1f1f1; 
 }
 
 td.error {
@@ -82,24 +82,23 @@ td.error {
 }
 
 #chartCard {
-  background-color: #262b4f; /* Dark blue-gray background for chart card */
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6); /* Darker shadow for depth */
+  background-color: #262b4f; 
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6); 
   border-radius: 16px;
   padding: 1rem;
   margin-top: 2rem;
   width: 100%;
   max-width: 600px;
   display: block;
-  height: 400px; /* Set max height for the chart */
+  height: 400px; 
   overflow: hidden; /* Prevent overflow */
 }
 
 #sensorChart {
-  height: 100%; /* Fill container height */
-}
+  height: 100%; 
 
 button {
-  background-color: #1d3c8f; /* Deep tech blue for button */
+  background-color: #1d3c8f; 
   color: white;
   border: none;
   padding: 10px 20px;
@@ -110,15 +109,15 @@ button {
 }
 
 button:hover {
-  background-color: #17497f; /* Slightly darker blue on hover */
+  background-color: #17497f; 
 }
 
 button.stop {
-  background-color: #b53939; /* Red color for stop buttons */
+  background-color: #b53939; 
 }
 
 button.stop:hover {
-  background-color: #9f3131; /* Darker red on hover */
+  background-color: #9f3131; 
 }
 
 /* Responsive: mobile-friendly adjustments */
