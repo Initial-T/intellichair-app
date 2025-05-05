@@ -1,0 +1,28 @@
+# README
+
+A quick guide to running the frame streamer backend and web dashboard.
+
+---
+
+## 1. Start the Python Backend
+
+1. Open a terminal and run:
+   ```bash
+   python main.py
+This will:
+
+Capture video frames and display them in your terminal.(This is will  send on the local host i think port 5000 so anyone with link could see the JSON)
+
+Send each frame via HTTP to the configured endpoint.
+
+Auto-restart on failure
+If the stream stops or you see errors, press Ctrl + R in your editor/terminal. The script watcher will detect the change and restart main.py automatically.
+
+2. Launch the Web Dashboard
+Open index.html in your browser to view the live dashboard.
+
+For development
+
+In VS Code, right-click index.html → Open with Live Server
+
+
