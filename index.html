@@ -13,7 +13,41 @@
 </head>
 <body>
   <h1>INTELLICHAIR</h1>
+  <script>
+    async function checkFallStatus() {
+      try {
+        let response = await fetch("http://localhost:5000/fall_status", {
+          mode: 'cors' // Allows cross-origin requests
+        });
+  
+        
+  
+        let data = await response.json();
+  
+        // Update fall detection status
+        let fallAlert = document.getElementById("fallAlert");
+        if (data.fall_detected) {
+          fallAlert.innerText = "⚠️ Fall Detected!";
+          fallAlert.style.backgroundColor = "red";
+          fallAlert.style.color = "white";
+        } else {
+          fallAlert.innerText = "✅ No Fall Detected";
+          fallAlert.style.backgroundColor = "green";
+          fallAlert.style.color = "white";
+        }
+      } catch (error) {
+        console.error("Error fetching fall detection:", error);
+        document.getElementById("fallAlert").innerText = "⚠️ Error fetching data";
+      }
+    }
+  
+    setInterval(checkFallStatus, 1000); // Check fall status every second
+  </script>
+  
+<div id="fallAlert" class="alert">Loading fall detection status...</div>
 
+
+  <img src="http://localhost:5000/video_feed" width="980" height="740" />
   <div id="posture">Posture: <span id="seatPosture">-</span></div>
   <div id="lastUpdated">Last updated: <span id="timestamp">-</span></div>
 

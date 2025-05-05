@@ -4,7 +4,11 @@ from firebase_admin import credentials, db
 import time
 
 # Initialize Firebase
+<<<<<<< HEAD
 cred = credentials.Certificate("path")
+=======
+cred = credentials.Certificate("C:\\Users\\Kusa\\Desktop\\newkey.json")
+>>>>>>> 5cdd3eb (Pushing all code Currently)
 firebase_admin.initialize_app(cred, {
     'databaseURL': 'databaseURL'
 })
@@ -94,3 +98,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+<<<<<<< HEAD
+=======
+
+>>>>>>> 5cdd3eb (Pushing all code Currently)
