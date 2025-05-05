@@ -5,7 +5,7 @@ import requests  # Import requests to send alerts
 from ultralytics import YOLO
 from flask import Flask, Response, jsonify
 from flask_cors import CORS
-
+import time
 app = Flask(__name__)
 CORS(app)  # Allow request
 
@@ -23,12 +23,9 @@ with open('classes.txt', 'r') as f:
 fall_detected = False  # Flag for fall detection
 WEBSITE_URL = "http://localhost:5000/fall_status"  # Replace with actual website API endpoint
 
-# Flask app for live streaming & status update
-app = Flask(__name__)
-
 def send_fall_notification(status):
     """Send fall detection status to the website via API."""
-    print(status)
+    print("Fall detected:", status)
     try:
         response = requests.post(WEBSITE_URL, json={"fall_detected": status})
         print(f"Notification sent: {response.status_code}")
@@ -38,6 +35,7 @@ def send_fall_notification(status):
 def generate_frames():
     global fall_detected
     while True:
+       
         ret, frame = cap.read()
         if not ret:
             print("Failed to grab frame")
@@ -67,8 +65,8 @@ def generate_frames():
                 # Fall detection
                 new_fall_status = ratio < threshold_ratio
                 if new_fall_status != fall_detected:  # Only send update if status changes
-                    fall_detected = new_fall_status
-                    print("FAll detected")
+                    fall_detected = new_fall_status  # Update global variable
+                    time.sleep(1)
                     send_fall_notification(fall_detected)
 
         # Encode the frame for live streaming
@@ -83,15 +81,15 @@ def video_feed():
 
 @app.route('/fall_status')
 def get_fall_status():
-    response = jsonify({"fall_detected": False})
-    response.headers.add("Access-Control-Allow-Origin", "*")  # Explicitly setting the header
+    global fall_detected  # Return actual detection status
+    response = jsonify({"fall_detected": fall_detected})
+    response.headers.add("Access-Control-Allow-Origin", "*")
     response.headers.add("Access-Control-Allow-Methods", "GET, OPTIONS")
     response.headers.add("Access-Control-Allow-Headers", "Content-Type")
     return response
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
-
 
 # Release webcam when done
 cap.release()
