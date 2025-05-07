@@ -16,7 +16,7 @@
   <script>
     async function checkFallStatus() {
       try {
-        let response = await fetch("http://localhost:5000/fall_status", {
+        let response = await fetch("https://intellichair.ngrok.app/fall_status", {
           mode: 'cors' // Allows cross-origin requests
         });
   
@@ -47,8 +47,8 @@
   
 <div id="fallAlert" class="alert">Loading fall detection status...</div>
 
-
-  <img src="http://localhost:5000/video_feed" width="980" height="740" />
+ <img src="https://intellichair.ngrok.app/video_feed" width="980" height="740" />
+ 
   <div id="posture">Posture: <span id="seatPosture">-</span></div>
   <div id="lastUpdated">Last updated: <span id="timestamp">-</span></div>
 
@@ -177,3 +177,5 @@
   </script>
 </body>
 </html>
+*/
+  
