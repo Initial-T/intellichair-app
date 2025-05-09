@@ -1,9 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>IntelliChair Sensor Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@500;700&display=swap" rel="stylesheet">
+  <!-- Load the font -->
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="style.css">
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js"></script>
@@ -12,52 +16,19 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-  <h1>INTELLICHAIR</h1>
-  <script>
-    async function checkFallStatus() {
-      try {
-        let response = await fetch("https://intellichair.ngrok.app/fall_status", {
-          mode: 'cors' // Allows cross-origin requests
-        });
-  
-        
-  
-        let data = await response.json();
-        console.log(data)
-  
-        // Update fall detection status
-        let fallAlert = document.getElementById("fallAlert");
-        if (data.fall_detected) {
-          fallAlert.innerText = "⚠️ Fall Detected!";
-          fallAlert.style.backgroundColor = "red";
-          fallAlert.style.color = "white";
-        } else {
-          fallAlert.innerText = "✅ No Fall Detected";
-          fallAlert.style.backgroundColor = "green";
-          fallAlert.style.color = "white";
-        }
-      } catch (error) {
-        console.error("Error fetching fall detection:", error);
-        document.getElementById("fallAlert").innerText = "⚠️ Error fetching data";
-      }
-    }
-  
-    setInterval(checkFallStatus, 1000); // Check fall status every second
-  </script>
-  
-<div id="fallAlert" class="alert">Loading fall detection status...</div>
-
- <img src="https://intellichair.ngrok.app/video_feed" width="980" height="740" />
- 
+  <h1 class="fade-in">Intellichair</h1>
+  <div id="fallAlert" class="alert fade-in">Loading fall detection status...</div>
+  <img src="http://localhost:5000/video_feed" width="490" height="370" class="fade-in" />
   <div id="posture">Posture: <span id="seatPosture">-</span></div>
   <div id="lastUpdated">Last updated: <span id="timestamp">-</span></div>
 
-  <div class="sensor-container">
+  <div class="sensor-container fade-in">
+    <!-- Backrest -->
     <div class="sensor-section">
       <h3>Backrest Sensors</h3>
       <table>
         <thead>
-          <tr><th>Sensor</th><th>Location</th><th>Sensor Value (0–100)</th></tr> 
+          <tr><th>Sensor</th><th>Location</th><th>Sensor Value (N)</th></tr> 
         </thead>
         <tbody>
           <tr><td>1</td><td>Backrest Left</td><td id="s1">-</td></tr>
@@ -65,12 +36,12 @@
         </tbody>
       </table>
     </div>
-
+    <!-- Seat -->
     <div class="sensor-section">
       <h3>Seat Sensors</h3>
       <table>
         <thead>
-          <tr><th>Sensor</th><th>Location</th><th>Sensor Value (0–100)</th></tr> 
+          <tr><th>Sensor</th><th>Location</th><th>Sensor Value (N)</th></tr> 
         </thead>
         <tbody>
           <tr><td>3</td><td>Seat Right Front</td><td id="s3">-</td></tr>
@@ -82,23 +53,47 @@
     </div>
   </div>
 
-  <div id="chartCard">
+  <div id="chartCard" class="fade-in">
     <h3>Sensor Trend</h3>
     <canvas id="sensorChart"></canvas>
   </div>
 
+  <!-- FALL DETECTION SCRIPT -->
+  <script>
+    async function checkFallStatus() {
+      try {
+        let response = await fetch("http://localhost:5000/fall_status", { mode: 'cors' });
+        let data = await response.json();
+        let fallAlert = document.getElementById("fallAlert");
+        if (data.fall_detected) {
+          fallAlert.innerText = "⚠️ Fall Detected!";
+          fallAlert.style.backgroundColor = "red";
+        } else {
+          fallAlert.innerText = "✅ No Fall Detected";
+          fallAlert.style.backgroundColor = "green";
+        }
+        fallAlert.style.color = "white";
+      } catch (error) {
+        console.error("Error fetching fall detection:", error);
+        document.getElementById("fallAlert").innerText = "⚠️ Stream Error";
+      }
+    }
+    setInterval(checkFallStatus, 1000);
+  </script>
+
+  <!-- FIREBASE SENSOR DATA -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
     import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-database.js";
 
     const firebaseConfig = {
-      apiKey: "apiKey",
-      authDomain: "authDomain",
-      databaseURL: "databaseURL",
+      apiKey: "AIzaSyCdUiXFXHemDB7SAuy1IvxZPnJx8pHLC5I",
+      authDomain: "intellichair-3062e.firebaseapp.com",
+      databaseURL: "https://intellichair-3062e-default-rtdb.firebaseio.com",
       projectId: "intellichair-3062e",
-      storageBucket: "storageBucket",
-      messagingSenderId: "messagingSenderId",
-      appId: "appId"
+      storageBucket: "intellichair-3062e.appspot.com",
+      messagingSenderId: "480762202241",
+      appId: "1:480762202241:web:2714fd87266c32aadf6580"
     };
 
     const app = initializeApp(firebaseConfig);
@@ -110,7 +105,7 @@
       datasets: Array.from({ length: 6 }, (_, i) => ({
         label: `Sensor ${i + 1}`,
         data: [],
-        borderColor: `hsl(${i * 60}, 70%, 50%)`,
+        borderColor: `hsl(${i * 60}, 100%, 60%)`,
         fill: false,
         tension: 0.3
       }))
@@ -127,12 +122,7 @@
           y: { title: { display: true, text: 'Force (N)' }} 
         },
         plugins: {
-          legend: {
-            labels: {
-              boxWidth: 12,
-              padding: 10
-            }
-          }
+          legend: { labels: { color: '#fff' }}
         }
       }
     });
@@ -166,16 +156,10 @@
         }
       }
 
-      const postureDisplay = document.getElementById('seatPosture');
-      postureDisplay.innerText = data.seat_status || '-';
-
-      const timestamp = new Date().toLocaleString();
-      document.getElementById('timestamp').innerText = timestamp;
-
+      document.getElementById('seatPosture').innerText = data.seat_status || '-';
+      document.getElementById('timestamp').innerText = new Date().toLocaleString();
       updateChart(values);
     });
   </script>
 </body>
 </html>
-*/
-  
