@@ -4,13 +4,9 @@ from firebase_admin import credentials, db
 import time
 
 # Initialize Firebase
-<<<<<<< HEAD
-cred = credentials.Certificate("path")
-=======
 cred = credentials.Certificate("C:\\Users\\Kusa\\Desktop\\newkey.json")
->>>>>>> 5cdd3eb (Pushing all code Currently)
 firebase_admin.initialize_app(cred, {
-    'databaseURL': 'databaseURL'
+    'databaseURL': 'https://intellichair-3062e-default-rtdb.firebaseio.com/'
 })
 
 # Connect to Arduino
@@ -30,58 +26,45 @@ def read_data():
                 sensorData = line.split(",")
 
                 if len(sensorData) == 6:
-                    sensorData = [max(0, min(100, int(val))) for val in sensorData]  
+                    sensorData = [int(val) for val in sensorData]
 
-                    # sensor values
-                    backrestLeft = sensorData[0]
-                    backrestRight = sensorData[1]
-                    seatrightFront = sensorData[2]
-                    seatrightRear = sensorData[3]
-                    seatleftFront = sensorData[4]
-                    seatleftRear = sensorData[5]
+                    # Assign forces
+                    seatleftFront   = sensorData[0]  # A0
+                    seatleftRear    = sensorData[1]  # A1
+                    seatrightFront  = sensorData[2]  # A2
+                    seatrightRear   = sensorData[3]  # A3
+                    backrestLeft    = sensorData[4]  # A4
+                    backrestRight   = sensorData[5]  # A5
 
-                    seatLeft = seatleftFront + seatleftRear
-                    seatRight = seatrightFront + seatrightRear
-                    backTotal = backrestLeft + backrestRight
-                    seatTotal = seatLeft + seatRight
 
-                    # posture logic
-                    if seatTotal == 0 and backTotal == 0:
-                        seatStatus = "No one is seated"
+                    backCushion = backrestRight + backrestLeft
+                    gyattCushion = seatleftFront + seatleftRear + seatrightFront + seatrightRear
 
+                    seatleftTotal = seatleftFront + seatleftRear + backrestLeft
+                    seatrightTotal = seatrightFront + seatrightRear + backrestRight
+
+                    if backCushion < 100 and gyattCushion >= 300:
+                        seatStatus = "Leaning forward"
+                    elif seatleftTotal >= 180 and seatrightTotal >= 180:
+                        seatStatus = "Evenly seated"
+                    elif seatleftTotal > seatrightTotal + 50:
+                        seatStatus = "Leaning left"
+                    elif seatrightTotal > seatleftTotal + 50:
+                        seatStatus = "Leaning right"
                     else:
-                        totalSensors = backrestLeft + backrestRight + seatrightFront 
-                        + seatrightRear + seatleftFront + seatleftRear
-                        
-                        avg = totalSensors / 6
-                        diff1 = abs(backrestLeft - avg)
-                        diff2 = abs(backrestRight - avg)
-                        diff3 = abs(seatrightFront - avg)
-                        diff4 = abs(seatrightRear - avg)
-                        diff5 = abs(seatleftFront - avg)
-                        diff6 = abs(seatleftRear - avg)
-
-                        if diff1 < avg * 0.2 and diff2 < avg * 0.2 and diff3 < avg * 0.2 and diff4 < avg * 0.2 and diff5 < avg * 0.2 and diff6 < avg * 0.2:
-                            seatStatus = "Evenly seated"
-                        elif backrestLeft < 10 and backrestRight < 10 and seatTotal > 50:
-                            seatStatus = "Leaning forward"
-                        elif seatrightFront + seatrightRear + backrestRight > (seatleftFront + seatleftRear + backrestLeft) * 1.2:
-                            seatStatus = "Leaning right"
-                        elif seatleftFront + seatleftRear + backrestLeft > (seatrightFront + seatrightRear + backrestRight) * 1.2:
-                            seatStatus = "Leaning left"
-                        else:
-                            seatStatus = "Adjusting posture"
+                        seatStatus = "No one is seated"
 
                     # Upload to Firebase
                     uploadData = {
-                        'sensor_1': backrestLeft,
+                        'sensor_6': seatleftRear, 
+                        'sensor_5': seatleftFront, 
+                        'sensor_4': seatrightFront, 
+                        'sensor_3': seatrightRear, 
                         'sensor_2': backrestRight,
-                        'sensor_3': seatrightFront,
-                        'sensor_4': seatrightRear,
-                        'sensor_5': seatleftFront,
-                        'sensor_6': seatleftRear,
+                        'sensor_1': backrestLeft, 
                         'seat_status': seatStatus
                     }
+
 
                     print("Uploading to Firebase:", uploadData)
                     ref = db.reference('pressure_data')
@@ -98,7 +81,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-<<<<<<< HEAD
-=======
-
->>>>>>> 5cdd3eb (Pushing all code Currently)
